@@ -24,9 +24,10 @@ export const ADSENSE_CLIENT_ID = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || ""
 export const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "";
 
 /**
- * Google site verification token (AdSense / Search Console). Rendered as a
- * `<meta name="google-site-verification">` tag when set. Leave empty until you
- * have a token, then set it in your Vercel env vars — no code change needed.
+ * Google Search Console verification token. Rendered as a
+ * `<meta name="google-site-verification">` tag when set. Note: the AdSense
+ * publisher check (`<meta name="google-adsense-account">`) is derived from
+ * NEXT_PUBLIC_ADSENSE_CLIENT_ID automatically — no token needed for that.
  */
 export const GOOGLE_SITE_VERIFICATION =
   process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "";

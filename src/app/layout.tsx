@@ -6,7 +6,7 @@ import { Header } from "@/components/Layout/Header";
 import { Footer } from "@/components/Layout/Footer";
 import { MotionProvider } from "@/components/MotionProvider";
 import { PageTransition } from "@/components/PageTransition";
-import { GA_ID, GOOGLE_SITE_VERIFICATION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/config";
+import { ADSENSE_CLIENT_ID, GA_ID, GOOGLE_SITE_VERIFICATION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/config";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -35,11 +35,20 @@ export const metadata: Metadata = {
     description: SITE_TAGLINE,
   },
   robots: { index: true, follow: true },
-  // Google ownership verification (AdSense / Search Console). Rendered as a
-  // <meta name="google-site-verification"> tag only when a token is configured.
-  ...(GOOGLE_SITE_VERIFICATION
-    ? { verification: { google: GOOGLE_SITE_VERIFICATION } }
-    : {}),
+  // Google ownership verification:
+  // - <meta name="google-adsense-account" content="ca-pub-…"> — AdSense
+  //   publisher check, derived automatically from the client ID.
+  // - <meta name="google-site-verification"> — Search Console, only when a
+  //   token is configured.
+  // Tags only appear when their value is non-empty.
+  verification: {
+    ...(GOOGLE_SITE_VERIFICATION
+      ? { google: GOOGLE_SITE_VERIFICATION }
+      : {}),
+    ...(ADSENSE_CLIENT_ID
+      ? { other: { "google-adsense-account": ADSENSE_CLIENT_ID } }
+      : {}),
+  },
 };
 
 /** Inline theme bootstrap: applies the saved/OS theme before hydration to avoid a flash. */
