@@ -6,7 +6,7 @@ import { Header } from "@/components/Layout/Header";
 import { Footer } from "@/components/Layout/Footer";
 import { MotionProvider } from "@/components/MotionProvider";
 import { PageTransition } from "@/components/PageTransition";
-import { GA_ID, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/config";
+import { GA_ID, GOOGLE_SITE_VERIFICATION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/config";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -35,6 +35,11 @@ export const metadata: Metadata = {
     description: SITE_TAGLINE,
   },
   robots: { index: true, follow: true },
+  // Google ownership verification (AdSense / Search Console). Rendered as a
+  // <meta name="google-site-verification"> tag only when a token is configured.
+  ...(GOOGLE_SITE_VERIFICATION
+    ? { verification: { google: GOOGLE_SITE_VERIFICATION } }
+    : {}),
 };
 
 /** Inline theme bootstrap: applies the saved/OS theme before hydration to avoid a flash. */

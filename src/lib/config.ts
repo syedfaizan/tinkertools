@@ -22,3 +22,11 @@ export const ADSENSE_CLIENT_ID = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || ""
 
 /** Google Analytics 4 measurement ID, e.g. "G-XXXXXXXXXX". */
 export const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "";
+
+/**
+ * Google site verification token (AdSense / Search Console). Rendered as a
+ * `<meta name="google-site-verification">` tag when set. Leave empty until you
+ * have a token, then set it in your Vercel env vars — no code change needed.
+ */
+export const GOOGLE_SITE_VERIFICATION =
+  process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "";
