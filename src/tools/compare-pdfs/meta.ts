@@ -11,7 +11,7 @@ export const comparePdfsMeta: ToolMeta = {
   title: "Compare PDFs",
   description:
     "Side-by-side page comparison plus word-level similarity scoring between two PDF versions — processed privately on your device.",
-  category: "PDF",
+  category: "pdf",
   keywords: [
     "compare pdfs",
     "pdf difference",

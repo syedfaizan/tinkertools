@@ -11,7 +11,7 @@ export const addPageNumbersMeta: ToolMeta = {
   title: "Add Page Numbers",
   description:
     "Number the pages of any PDF with your choice of position, start number and style — processed locally, private and free.",
-  category: "PDF",
+  category: "pdf",
   keywords: [
     "add page numbers to pdf",
     "page numbers pdf",

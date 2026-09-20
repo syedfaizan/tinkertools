@@ -11,7 +11,7 @@ export const rotatePdfPagesMeta: ToolMeta = {
   title: "Rotate PDF Pages",
   description:
     "Permanently rotate one page, several, or every page of a PDF by 90 or 180 degrees — all within your browser.",
-  category: "Organize",
+  category: "pdf",
   keywords: [
     "rotate pdf pages",
     "rotate pdf",

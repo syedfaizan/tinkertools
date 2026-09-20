@@ -11,7 +11,7 @@ export const extractPdfImagesMeta: ToolMeta = {
   title: "Extract Images from PDF",
   description:
     "Pull every embedded photo and graphic out of a PDF as original-quality JPG or PNG files — instantly, in your browser.",
-  category: "Convert",
+  category: "image",
   keywords: [
     "extract images from pdf",
     "pdf images extractor",

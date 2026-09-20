@@ -11,7 +11,7 @@ export const pdfOverlayMeta: ToolMeta = {
   title: "Overlay PDF",
   description:
     "Layer a second PDF on top of another — perfect for annotating templates, drafts and comparisons, entirely in your browser.",
-  category: "PDF",
+  category: "pdf",
   keywords: ["overlay pdf", "pdf overlay", "stack pdfs", "combine pdf layers"],
   icon: Layers,
   component: PdfOverlay,

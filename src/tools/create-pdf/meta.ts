@@ -11,7 +11,7 @@ export const createPdfMeta: ToolMeta = {
   title: "Create PDF from Text",
   description:
     "Write or paste text and instantly download it as a clean, print-ready PDF — composed entirely in your browser, with nothing uploaded.",
-  category: "Text",
+  category: "pdf",
   keywords: [
     "create pdf from text",
     "text to pdf",

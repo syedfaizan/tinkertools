@@ -11,7 +11,7 @@ export const pdfToImagesMeta: ToolMeta = {
   title: "PDF to Images",
   description:
     "Export every page of a PDF as high-quality JPG or PNG images — as separate files or one zip. All rendered locally on your device.",
-  category: "Convert",
+  category: "image",
   keywords: [
     "pdf to images",
     "pdf to jpg",

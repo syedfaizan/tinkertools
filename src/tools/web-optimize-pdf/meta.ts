@@ -11,7 +11,7 @@ export const webOptimizePdfMeta: ToolMeta = {
   title: "Optimize PDF for Web",
   description:
     "Clean up metadata and compact the file structure of a PDF so it loads faster in browsers — done locally, with no uploads.",
-  category: "PDF",
+  category: "pdf",
   keywords: [
     "optimize pdf for web",
     "optimize pdf",

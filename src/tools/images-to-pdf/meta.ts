@@ -11,7 +11,7 @@ export const imagesToPdfMeta: ToolMeta = {
   title: "Images to PDF",
   description:
     "Combine JPG, PNG, WebP and other images into a single PDF with adjustable page size and orientation — securely in your browser.",
-  category: "Convert",
+  category: "image",
   keywords: [
     "images to pdf",
     "jpg to pdf",

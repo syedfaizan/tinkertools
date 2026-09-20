@@ -11,7 +11,7 @@ export const addWatermarkMeta: ToolMeta = {
   title: "Add Watermark to PDF",
   description:
     "Stamp every page of a PDF with a text or image watermark at any angle and opacity, completely in your browser.",
-  category: "PDF",
+  category: "pdf",
   keywords: [
     "watermark pdf",
     "add watermark to pdf",

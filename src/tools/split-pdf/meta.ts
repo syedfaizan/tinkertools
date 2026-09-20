@@ -11,7 +11,7 @@ export const splitPdfMeta: ToolMeta = {
   title: "Split PDF",
   description:
     "Split a PDF into separate files by page ranges or every single page — quickly and in your browser. Your documents never leave your device.",
-  category: "PDF",
+  category: "pdf",
   keywords: [
     "split pdf",
     "separate pdf pages",

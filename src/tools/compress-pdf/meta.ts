@@ -11,7 +11,7 @@ export const compressPdfMeta: ToolMeta = {
   title: "Compress PDF",
   description:
     "Shrink PDF file size by re-encoding pages as quality-controlled images — right in your browser, so none of your files leave your device.",
-  category: "PDF",
+  category: "pdf",
   keywords: [
     "compress pdf",
     "reduce pdf size",

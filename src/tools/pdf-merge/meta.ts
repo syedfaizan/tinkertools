@@ -15,7 +15,7 @@ export const pdfMergeMeta: ToolMeta = {
   title: "PDF Merge",
   description:
     "Combine multiple PDF files into a single document, entirely in your browser. Files never leave your device.",
-  category: "PDF",
+  category: "pdf",
   keywords: ["merge pdf", "combine pdf", "join pdf files", "pdf merger online"],
   icon: Files,
   component: PdfMerge,

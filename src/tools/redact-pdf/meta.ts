@@ -11,7 +11,7 @@ export const redactPdfMeta: ToolMeta = {
   title: "Redact PDF",
   description:
     "Permanently black out names, numbers and any sensitive text before sharing a document — redaction happens locally in your browser.",
-  category: "Security",
+  category: "pdf",
   keywords: [
     "redact pdf",
     "black out pdf text",

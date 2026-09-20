@@ -11,7 +11,7 @@ export const pdfOcrMeta: ToolMeta = {
   title: "PDF OCR",
   description:
     "Turn scanned PDFs into real, selectable text using AI character recognition in your browser — copy, download and search the result.",
-  category: "Text",
+  category: "text",
   keywords: [
     "pdf ocr",
     "scanned pdf to text",

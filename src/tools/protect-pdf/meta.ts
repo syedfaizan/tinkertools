@@ -11,7 +11,7 @@ export const protectPdfMeta: ToolMeta = {
   title: "Protect PDF",
   description:
     "Lock a PDF with a password and optional copy/print restrictions — encryption applied right in your browser, never on a server.",
-  category: "Security",
+  category: "pdf",
   keywords: [
     "protect pdf",
     "password protect pdf",

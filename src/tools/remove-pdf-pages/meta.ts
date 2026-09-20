@@ -11,7 +11,7 @@ export const removePdfPagesMeta: ToolMeta = {
   title: "Remove PDF Pages",
   description:
     "Delete unwanted pages from a PDF with visual page thumbnails — pick the pages and download the cleaned file, privately in your browser.",
-  category: "Organize",
+  category: "pdf",
   keywords: [
     "remove pdf pages",
     "delete pages from pdf",

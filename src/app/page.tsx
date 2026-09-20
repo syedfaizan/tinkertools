@@ -3,6 +3,7 @@ import { AdSlot } from "@/components/AdSlot";
 import { RecentlyUsed } from "@/components/RecentlyUsed";
 import { ToolCard } from "@/components/ToolCard";
 import { TOOLS, getCategories } from "@/tools/registry";
+import { getCategoryById } from "@/tools/categories";
 import { SITE_NAME, SITE_TAGLINE } from "@/lib/config";
 
 export default function HomePage() {
@@ -36,19 +37,28 @@ export default function HomePage() {
       <AdSlot placement="home-hero" className="mt-10" />
 
       <section id="tools" className="mt-10 scroll-mt-24">
-        {categories.map((category) => (
-          <div key={category} className="mt-10 first:mt-0">
-            <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-              <Sparkles className="h-4 w-4 text-indigo-500" aria-hidden="true" />
-              {category} tools
-            </h2>
-            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {TOOLS.filter((tool) => tool.category === category).map((tool) => (
-                <ToolCard key={tool.slug} slug={tool.slug} />
-              ))}
+        {categories.map((categoryId) => {
+          const category = getCategoryById(categoryId);
+          const CategoryIcon = category?.icon ?? Sparkles;
+          return (
+            <div key={categoryId} className="mt-10 first:mt-0">
+              <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+                <CategoryIcon
+                  className="h-4 w-4 text-indigo-500"
+                  aria-hidden="true"
+                />
+                {category?.label ?? categoryId} tools
+              </h2>
+              <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {TOOLS.filter((tool) => tool.category === categoryId).map(
+                  (tool) => (
+                    <ToolCard key={tool.slug} slug={tool.slug} />
+                  )
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </section>
 
       <section className="mt-14 rounded-2xl border border-zinc-200 bg-zinc-50 p-6 sm:p-8 dark:border-zinc-800 dark:bg-zinc-900/60">

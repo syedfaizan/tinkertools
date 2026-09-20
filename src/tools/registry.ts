@@ -1,6 +1,8 @@
 import type { ComponentType } from "react";
 import type { LucideIcon } from "lucide-react";
 
+import { CATEGORIES } from "@/tools/categories";
+
 import { wordCounterMeta } from "@/tools/word-counter/meta";
 import { pdfMergeMeta } from "@/tools/pdf-merge/meta";
 
@@ -89,13 +91,11 @@ export function getToolsByCategory(category: string): ToolMeta[] {
   return TOOLS.filter((tool) => tool.category === category);
 }
 
-/** Categories in first-appearance order. */
+/** Category ids that currently have tools, in canonical display order. */
 export function getCategories(): string[] {
-  const categories: string[] = [];
-  for (const tool of TOOLS) {
-    if (!categories.includes(tool.category)) categories.push(tool.category);
-  }
-  return categories;
+  return CATEGORIES.map((category) => category.id).filter((id) =>
+    TOOLS.some((tool) => tool.category === id)
+  );
 }
 
 /** 2–3 tools to surface next to a given tool (same category first). */

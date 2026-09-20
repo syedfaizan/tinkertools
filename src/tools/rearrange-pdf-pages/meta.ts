@@ -11,7 +11,7 @@ export const rearrangePdfPagesMeta: ToolMeta = {
   title: "Rearrange PDF Pages",
   description:
     "Reorder the pages of a PDF by dragging thumbnails into a new order, then download the reorganized document — all in your browser.",
-  category: "Organize",
+  category: "pdf",
   keywords: [
     "rearrange pdf pages",
     "reorder pdf pages",

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { CornerDownLeft, Search } from "lucide-react";
 import { TOOLS, TOOL_ROUTE } from "@/tools/registry";
+import { getCategoryById } from "@/tools/categories";
 import { cn } from "@/lib/utils";
 
 /**
@@ -169,7 +170,8 @@ export function CommandPalette() {
                         />
                         <span className="flex-1 truncate">{tool.title}</span>
                         <span className="rounded-md bg-zinc-100 px-1.5 py-0.5 text-[10px] font-medium text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500">
-                          {tool.category}
+                          {getCategoryById(tool.category)?.label ??
+                            tool.category}
                         </span>
                         {isActive && (
                           <CornerDownLeft

@@ -11,7 +11,7 @@ export const editPdfMeta: ToolMeta = {
   title: "Edit PDF",
   description:
     "Draw, highlight and add text to any page of a PDF and save the result — a lightweight markup editor that keeps your files on your device.",
-  category: "PDF",
+  category: "pdf",
   keywords: [
     "edit pdf",
     "annotate pdf",

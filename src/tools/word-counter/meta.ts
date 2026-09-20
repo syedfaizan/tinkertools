@@ -7,7 +7,7 @@ export const wordCounterMeta: ToolMeta = {
   title: "Word Counter",
   description:
     "Count words, characters, sentences and paragraphs and estimate reading time — live, in your browser, with zero uploads.",
-  category: "Text",
+  category: "text",
   keywords: [
     "word counter",
     "character count",

@@ -11,7 +11,7 @@ export const signPdfMeta: ToolMeta = {
   title: "Sign PDF",
   description:
     "Draw or type your signature, then drag it onto the page and download the signed PDF — all in your browser with no uploads.",
-  category: "PDF",
+  category: "pdf",
   keywords: [
     "sign pdf",
     "signature online",

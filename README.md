@@ -54,6 +54,8 @@ testing). Once AdSense approves your site, set
 1. Copy `src/tools/word-counter/` to `src/tools/your-tool/`.
 2. Edit `meta.ts` — slug, title, description, category, keywords, icon
    (any lucide icon), and the `component` import.
+   - `category` must be an id defined in `src/tools/categories.ts` (add new
+     categories there — they get an icon, label, and homepage ordering for free).
    - Small dependency-free tools: `import { YourTool } from "./index"`.
    - Heavy tools (anything with a big library): wrap in `next/dynamic` like
      `src/tools/pdf-merge/meta.ts` so the library only loads on that tool's page.

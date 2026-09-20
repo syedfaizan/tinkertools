@@ -11,7 +11,7 @@ export const unlockPdfMeta: ToolMeta = {
   title: "Unlock PDF",
   description:
     "Remove the password from a protected PDF you have the password for — decrypted locally on your device, with nothing uploaded.",
-  category: "Security",
+  category: "pdf",
   keywords: [
     "unlock pdf",
     "remove pdf password",

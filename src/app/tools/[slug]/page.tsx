@@ -4,6 +4,7 @@ import { AdSlot } from "@/components/AdSlot";
 import { RelatedTools } from "@/components/RelatedTools";
 import { TrackVisit } from "@/components/TrackVisit";
 import { TOOLS, getToolBySlug, TOOL_ROUTE } from "@/tools/registry";
+import { getCategoryById } from "@/tools/categories";
 import { SITE_NAME, SITE_URL } from "@/lib/config";
 
 export const dynamicParams = false;
@@ -51,7 +52,7 @@ export default async function ToolPage({
 
       <header className="mb-8">
         <p className="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-          {tool.category}
+          {getCategoryById(tool.category)?.label ?? tool.category}
         </p>
         <h1 className="mt-2 text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl dark:text-zinc-50">
           {tool.title}

@@ -11,7 +11,7 @@ export const extractPdfPagesMeta: ToolMeta = {
   title: "Extract PDF Pages",
   description:
     "Pull any selection of pages out of a PDF into a brand-new file, or split pages into separate PDFs — done locally, no uploads.",
-  category: "Organize",
+  category: "pdf",
   keywords: [
     "extract pages from pdf",
     "extract pdf pages",
