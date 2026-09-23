@@ -23,6 +23,7 @@ import { rearrangePdfPagesMeta } from "@/tools/rearrange-pdf-pages/meta";
 import { webpageToPdfMeta } from "@/tools/webpage-to-pdf/meta";
 import { pdfOcrMeta } from "@/tools/pdf-ocr/meta";
 import { textDiffMeta } from "@/tools/text-diff/meta";
+import { videoToAudioMeta } from "@/tools/video-to-audio/meta";
 import { addWatermarkMeta } from "@/tools/add-watermark/meta";
 import { addPageNumbersMeta } from "@/tools/add-page-numbers/meta";
 import { pdfOverlayMeta } from "@/tools/pdf-overlay/meta";
@@ -70,6 +71,7 @@ export const TOOLS: ToolMeta[] = [
   webpageToPdfMeta,
   pdfOcrMeta,
   textDiffMeta,
+  videoToAudioMeta,
   protectPdfMeta,
   unlockPdfMeta,
   redactPdfMeta,
