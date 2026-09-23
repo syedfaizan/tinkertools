@@ -11,6 +11,8 @@ import { compressPdfMeta } from "@/tools/compress-pdf/meta";
 import { editPdfMeta } from "@/tools/edit-pdf/meta";
 import { signPdfMeta } from "@/tools/sign-pdf/meta";
 import { pdfConverterMeta } from "@/tools/pdf-converter/meta";
+import { wordToPdfMeta } from "@/tools/word-to-pdf/meta";
+import { pdfToWordMeta } from "@/tools/pdf-to-word/meta";
 import { imagesToPdfMeta } from "@/tools/images-to-pdf/meta";
 import { pdfToImagesMeta } from "@/tools/pdf-to-images/meta";
 import { extractPdfImagesMeta } from "@/tools/extract-pdf-images/meta";
@@ -65,6 +67,8 @@ export const TOOLS: ToolMeta[] = [
   editPdfMeta,
   signPdfMeta,
   pdfConverterMeta,
+  wordToPdfMeta,
+  pdfToWordMeta,
   imagesToPdfMeta,
   pdfToImagesMeta,
   extractPdfImagesMeta,
