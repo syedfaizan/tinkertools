@@ -74,7 +74,33 @@ export function WordToPdf() {
 
       // 2. Wait until the hidden preview node has been painted, then capture it.
       await waitForNode(docRef, result.value);
-      await new Promise((resolve) => setTimeout(resolve, 80));
+
+      // Let images decode and fonts settle so the laid-out height is the
+      // final one. The resume we test with embeds 18 images via data: URIs;
+      // capturing before they decode makes the measurement (and hence the
+      // band count) wrong and can truncate content.
+      const contentNode = docRef.current;
+      if (contentNode) {
+        const embedded = Array.from(contentNode.querySelectorAll("img"));
+        if (embedded.length > 0) {
+          await Promise.race([
+            Promise.all(
+              embedded.map(
+                (img) =>
+                  img.complete && img.naturalWidth > 0
+                    ? Promise.resolve()
+                    : new Promise<void>((resolve) => {
+                        img.addEventListener("load", () => resolve(), { once: true });
+                        img.addEventListener("error", () => resolve(), { once: true });
+                      })
+              )
+            ),
+            new Promise<void>((resolve) => setTimeout(resolve, 5000)),
+          ]);
+        }
+      }
+      await document.fonts.ready;
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       if (!docRef.current) {
         throw new Error("Document preview wasn't ready.");
