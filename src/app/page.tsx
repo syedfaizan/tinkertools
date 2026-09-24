@@ -1,16 +1,54 @@
-import { ShieldCheck, Sparkles } from "lucide-react";
+import type { Metadata } from "next";
+import { ChevronDown, ShieldCheck, Sparkles } from "lucide-react";
 import { AdSlot } from "@/components/AdSlot";
+import { JsonLd } from "@/components/JsonLd";
 import { RecentlyUsed } from "@/components/RecentlyUsed";
 import { ToolCard } from "@/components/ToolCard";
 import { TOOLS, getCategories } from "@/tools/registry";
 import { getCategoryById } from "@/tools/categories";
-import { SITE_NAME, SITE_TAGLINE } from "@/lib/config";
+import {
+  faqSchema,
+  itemListSchema,
+  organizationSchema,
+  webSiteSchema,
+} from "@/lib/seo";
+import { SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/config";
+
+export const metadata: Metadata = {
+  alternates: { canonical: SITE_URL },
+  openGraph: { type: "website", url: SITE_URL, locale: "en_US" },
+  twitter: { card: "summary_large_image" },
+};
+
+const FAQS: { q: string; a: string }[] = [
+  {
+    q: "Is TinkerTools free?",
+    a: "Yes — every tool is 100% free with no sign-ups, no limits and no queue. The site is supported by unobtrusive ads.",
+  },
+  {
+    q: "Are my files uploaded to a server?",
+    a: "No. Every tool runs entirely in your browser, so your files are processed right on your device and are never uploaded, stored or seen by anyone.",
+  },
+  {
+    q: "Which devices does TinkerTools work on?",
+    a: "All tools run in any modern browser on desktop, tablet and mobile. There is nothing to install and no app to download.",
+  },
+  {
+    q: "Can I convert Word to PDF and PDF to Word?",
+    a: "Yes — see PDF to Word and Word to PDF under the PDF tools. Both run entirely in your browser and keep your files private.",
+  },
+];
 
 export default function HomePage() {
   const categories = getCategories();
 
   return (
     <div className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-14">
+      <JsonLd data={webSiteSchema()} />
+      <JsonLd data={organizationSchema()} />
+      <JsonLd data={itemListSchema()} />
+      <JsonLd data={faqSchema(FAQS)} />
+
       <section className="max-w-2xl">
         <h1 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-[2.6rem] sm:leading-[1.15] dark:text-zinc-50">
           Free online tools that run entirely in your browser
@@ -73,6 +111,35 @@ export default function HomePage() {
           files go: they never leave your device. More tools are added
           regularly, so check back often.
         </p>
+      </section>
+
+      <section className="mt-10" aria-labelledby="faq-heading">
+        <h2
+          id="faq-heading"
+          className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50"
+        >
+          Frequently asked questions
+        </h2>
+        <div className="mt-4 divide-y divide-zinc-200 rounded-2xl border border-zinc-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900/60">
+          {FAQS.map((faq) => (
+            <details
+              key={faq.q}
+              name="faq"
+              className="group px-5 py-4"
+            >
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-zinc-900 dark:text-zinc-50 [&::-webkit-details-marker]:hidden">
+                {faq.q}
+                <ChevronDown
+                  className="h-4 w-4 shrink-0 text-zinc-400 transition-transform group-open:rotate-180"
+                  aria-hidden="true"
+                />
+              </summary>
+              <p className="mt-2 text-sm leading-6 text-zinc-500 dark:text-zinc-400">
+                {faq.a}
+              </p>
+            </details>
+          ))}
+        </div>
       </section>
 
       <AdSlot placement="home-bottom" className="mt-10" />

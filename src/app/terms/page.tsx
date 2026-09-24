@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { SITE_NAME } from "@/lib/config";
+import { SITE_NAME, SITE_URL } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "Terms of Use",
   description: `The terms that apply to your use of ${SITE_NAME} and its free online tools.`,
+  alternates: { canonical: `${SITE_URL}/terms` },
 };
 
 const LAST_UPDATED = "September 20, 2026";

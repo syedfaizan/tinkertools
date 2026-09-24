@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { ShieldCheck } from "lucide-react";
-import { SITE_NAME } from "@/lib/config";
+import { SITE_NAME, SITE_URL } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: `How ${SITE_NAME} handles your data — no accounts, no file uploads, and a clear explanation of cookies used for ads and analytics.`,
+  alternates: { canonical: `${SITE_URL}/privacy` },
 };
 
 const LAST_UPDATED = "September 20, 2026";
