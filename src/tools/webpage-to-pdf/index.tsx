@@ -109,8 +109,11 @@ function convertInFrame(
   return new Promise((resolve, reject) => {
     const frame = document.createElement("iframe");
     frame.title = "Webpage to PDF converter";
+    // Kept on-screen (opacity 0) rather than parked far off-screen: Chrome/Edge
+    // defer frames that are outside the viewport, so a `left: -10000px` frame
+    // never boots its srcdoc document and the conversion hangs.
     frame.style.cssText =
-      "position:fixed;left:-10000px;top:0;width:1120px;height:840px;border:0;visibility:hidden;";
+      "position:fixed;top:0;left:0;width:1120px;height:840px;border:0;opacity:0;pointer-events:none;z-index:-1;";
     frame.sandbox = "allow-scripts";
     const timeoutId = window.setTimeout(() => {
       frame.remove();

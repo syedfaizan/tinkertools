@@ -75,28 +75,64 @@ export function WordToPdf() {
       await waitForNode(docRef, result.value);
       await new Promise((resolve) => setTimeout(resolve, 80));
 
-      const html2pdf = (await import("html2pdf.js")).default;
       if (!docRef.current) {
         throw new Error("Document preview wasn't ready.");
       }
-      const blob = await html2pdf()
-        .set({
-          margin: 0,
-          filename: `${baseName(file.name)}.pdf`,
-          image: { type: "jpeg", quality: 0.96 },
-          html2canvas: { scale: 2, useCORS: true, logging: false },
-          jsPDF: {
-            unit: "pt",
-            format: pageSize === "a4" ? "a4" : "letter",
-            orientation: "portrait",
-          },
-          pagebreak: { mode: ["css", "legacy"] },
-        } as NonNullable<Parameters<typeof html2pdf>[1]>)
-        .from(docRef.current)
-        .outputPdf("blob");
+
+      // 2. Rasterize the preview. We call html2canvas directly instead of
+      //    html2pdf.js: html2pdf wraps the node in an opacity:0 overlay whose
+      //    container html2canvas mis-measures, yielding a 0-height canvas and
+      //    a blank PDF. Direct capture of the off-screen node renders fine.
+      const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
+        import("html2canvas"),
+        import("jspdf"),
+      ]);
+
+      const canvas = await html2canvas(docRef.current, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+      } as Parameters<typeof html2canvas>[1]);
+
+      // 3. Split the full-size capture into A4/Letter pages and save the PDF
+      //    (a port of html2pdf's page-splitting loop; nothing is uploaded).
+      const pageW = pageSize === "a4" ? 595.28 : 612; // pt
+      const pageH = pageSize === "a4" ? 841.89 : 792; // pt
+      const pxPageHeight = Math.floor(canvas.width * (pageH / pageW));
+      const nPages = Math.max(1, Math.ceil(canvas.height / pxPageHeight));
+
+      const pdf = new jsPDF({
+        unit: "pt",
+        format: pageSize === "a4" ? "a4" : "letter",
+        orientation: "portrait",
+      });
+      const pageCanvas = document.createElement("canvas");
+      const pageCtx = pageCanvas.getContext("2d");
+      if (!pageCtx) throw new Error("Canvas 2D isn't available.");
+      pageCanvas.width = canvas.width;
+      pageCanvas.height = pxPageHeight;
+
+      for (let pageIndex = 0; pageIndex < nPages; pageIndex++) {
+        let heightPt = pageH;
+        if (pageIndex === nPages - 1 && canvas.height % pxPageHeight !== 0) {
+          pageCanvas.height = canvas.height % pxPageHeight;
+          heightPt = (pageCanvas.height * pageW) / pageCanvas.width;
+        }
+        const w = pageCanvas.width;
+        const h = pageCanvas.height;
+        pageCtx.fillStyle = "white";
+        pageCtx.fillRect(0, 0, w, h);
+        pageCtx.drawImage(canvas, 0, pageIndex * pxPageHeight, w, h, 0, 0, w, h);
+        if (pageIndex > 0) pdf.addPage();
+        const imageData = pageCanvas.toDataURL("image/jpeg", 0.96);
+        pdf.addImage(imageData, "JPEG", 0, 0, pageW, heightPt);
+      }
+
+      const blob: Blob = pdf.output("blob");
 
       setDownloads([
-        { name: `${baseName(file.name)}.pdf`, blob: blob as Blob, primary: true },
+        { name: `${baseName(file.name)}.pdf`, blob, primary: true },
       ]);
     } catch (cause) {
       console.error("Word to PDF failed", cause);
