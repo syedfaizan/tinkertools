@@ -56,6 +56,7 @@ export function WordToPdf() {
   const [error, setError] = useState<string | null>(null);
   const [downloads, setDownloads] = useState<DownloadTarget[] | null>(null);
   const docRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
 
   const valid = file !== null && isDocx(file);
 
@@ -79,54 +80,77 @@ export function WordToPdf() {
         throw new Error("Document preview wasn't ready.");
       }
 
-      // 2. Rasterize the preview. We call html2canvas directly instead of
-      //    html2pdf.js: html2pdf wraps the node in an opacity:0 overlay whose
-      //    container html2canvas mis-measures, yielding a 0-height canvas and
-      //    a blank PDF. Direct capture of the off-screen node renders fine.
+      // 2. Rasterize the preview one page at a time. A single full-document
+      //    capture would need a canvas as tall as the whole document (~2245
+      //    px of canvas per PDF page), and browsers clip canvas height at
+      //    their GPU's max texture size (often 4096/8192 px on integrated
+      //    graphics). Long documents therefore silently lost everything past
+      //    the first ~4 pages. Instead we slide the content inside a
+      //    fixed-height, overflow:hidden viewport and capture each page band
+      //    separately, so every canvas we create fits on any device.
       const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
         import("html2canvas"),
         import("jspdf"),
       ]);
 
-      const canvas = await html2canvas(docRef.current, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: "#ffffff",
-      } as Parameters<typeof html2canvas>[1]);
-
-      // 3. Split the full-size capture into A4/Letter pages and save the PDF
-      //    (a port of html2pdf's page-splitting loop; nothing is uploaded).
+      const scale = 2;
       const pageW = pageSize === "a4" ? 595.28 : 612; // pt
       const pageH = pageSize === "a4" ? 841.89 : 792; // pt
-      const pxPageHeight = Math.floor(canvas.width * (pageH / pageW));
-      const nPages = Math.max(1, Math.ceil(canvas.height / pxPageHeight));
+      const viewport = viewportRef.current;
+      const content = docRef.current;
+      if (!viewport || !content) {
+        throw new Error("Document preview wasn't ready.");
+      }
+
+      const cssWidth = pageSize === "a4" ? 794 : 816;
+      const pxPageHeight = Math.floor(cssWidth * scale * (pageH / pageW));
+      const bandCss = pxPageHeight / scale;
+      const docH = content.scrollHeight;
+      let nPages = Math.max(1, Math.ceil(docH / bandCss));
+      // Drop a trailing sliver smaller than a line of text — it can't hold
+      // any visible glyphs and would render as a spurious near-blank page.
+      const lastBand = docH - (nPages - 1) * bandCss;
+      if (nPages > 1 && lastBand < 20) nPages -= 1;
 
       const pdf = new jsPDF({
         unit: "pt",
         format: pageSize === "a4" ? "a4" : "letter",
         orientation: "portrait",
       });
-      const pageCanvas = document.createElement("canvas");
-      const pageCtx = pageCanvas.getContext("2d");
-      if (!pageCtx) throw new Error("Canvas 2D isn't available.");
-      pageCanvas.width = canvas.width;
-      pageCanvas.height = pxPageHeight;
+
+      const capturePage = async (heightCss: number, scaleFactor: number) => {
+        viewport.style.height = `${heightCss}px`;
+        return html2canvas(viewport, {
+          scale: scaleFactor,
+          useCORS: true,
+          logging: false,
+          backgroundColor: "#ffffff",
+        } as Parameters<typeof html2canvas>[1]);
+      };
 
       for (let pageIndex = 0; pageIndex < nPages; pageIndex++) {
-        let heightPt = pageH;
-        if (pageIndex === nPages - 1 && canvas.height % pxPageHeight !== 0) {
-          pageCanvas.height = canvas.height % pxPageHeight;
-          heightPt = (pageCanvas.height * pageW) / pageCanvas.width;
+        content.style.transform = `translateY(${-Math.round(pageIndex * bandCss * 1000) / 1000}px)`;
+
+        const isLastPage = pageIndex === nPages - 1;
+        const bandHeight = isLastPage
+          ? Math.max(1, docH - (nPages - 1) * bandCss)
+          : bandCss;
+        const fullBand = bandHeight >= bandCss - 0.05;
+
+        let pageCanvas = await capturePage(fullBand ? bandCss : bandHeight, scale);
+
+        // The GPU clamped this canvas (returned height smaller than the band
+        // we asked for): re-capture that page at scale 1 so it fits.
+        const expected = Math.round((fullBand ? bandCss : bandHeight) * scale);
+        if (pageCanvas.height < expected - 1) {
+          pageCanvas = await capturePage(fullBand ? bandCss : bandHeight, 1);
         }
-        const w = pageCanvas.width;
-        const h = pageCanvas.height;
-        pageCtx.fillStyle = "white";
-        pageCtx.fillRect(0, 0, w, h);
-        pageCtx.drawImage(canvas, 0, pageIndex * pxPageHeight, w, h, 0, 0, w, h);
+
+        // Derive the final size from the actual canvas so aspect ratio holds
+        // even when a page was re-captured at a lower scale.
+        const heightPt = (pageCanvas.height * pageW) / pageCanvas.width;
         if (pageIndex > 0) pdf.addPage();
-        const imageData = pageCanvas.toDataURL("image/jpeg", 0.96);
-        pdf.addImage(imageData, "JPEG", 0, 0, pageW, heightPt);
+        pdf.addImage(pageCanvas, "JPEG", 0, 0, pageW, heightPt);
       }
 
       const blob: Blob = pdf.output("blob");
@@ -275,8 +299,14 @@ export function WordToPdf() {
               position: absolute;
               left: -100000px;
               top: 0;
-              box-sizing: border-box;
               width: ${pageSize === "a4" ? 794 : 816}px;
+            }
+            .w2p-viewport {
+              overflow: hidden;
+              width: 100%;
+            }
+            .w2p-content {
+              box-sizing: border-box;
               background: #fff;
               color: #1a1a1a;
               font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -286,24 +316,27 @@ export function WordToPdf() {
               padding: 64px 72px;
               word-wrap: break-word;
             }
-            .w2p-capture * { box-sizing: border-box; }
-            .w2p-capture h1 { font-size: 28px; margin: 0 0 16px; }
-            .w2p-capture h2 { font-size: 22px; margin: 22px 0 10px; }
-            .w2p-capture h3 { font-size: 18px; margin: 18px 0 8px; }
-            .w2p-capture h4, .w2p-capture h5, .w2p-capture h6 { font-size: 15px; margin: 14px 0 6px; }
-            .w2p-capture p { margin: 0 0 10px; }
-            .w2p-capture ul, .w2p-capture ol { margin: 0 0 10px; padding-left: 26px; }
-            .w2p-capture table { border-collapse: collapse; width: 100%; margin: 0 0 12px; }
-            .w2p-capture td, .w2p-capture th { border: 1px solid #bbb; padding: 6px 8px; }
-            .w2p-capture img { max-width: 100%; height: auto; }
-            .w2p-capture pre { white-space: pre-wrap; font-family: Consolas, Menlo, monospace; }
+            .w2p-content * { box-sizing: border-box; }
+            .w2p-content h1 { font-size: 28px; margin: 0 0 16px; }
+            .w2p-content h2 { font-size: 22px; margin: 22px 0 10px; }
+            .w2p-content h3 { font-size: 18px; margin: 18px 0 8px; }
+            .w2p-content h4, .w2p-content h5, .w2p-content h6 { font-size: 15px; margin: 14px 0 6px; }
+            .w2p-content p { margin: 0 0 10px; }
+            .w2p-content ul, .w2p-content ol { margin: 0 0 10px; padding-left: 26px; }
+            .w2p-content table { border-collapse: collapse; width: 100%; margin: 0 0 12px; }
+            .w2p-content td, .w2p-content th { border: 1px solid #bbb; padding: 6px 8px; }
+            .w2p-content img { max-width: 100%; height: auto; }
+            .w2p-content pre { white-space: pre-wrap; font-family: Consolas, Menlo, monospace; }
           `}</style>
-          <div
-            ref={docRef}
-            className="w2p-capture"
-            aria-hidden="true"
-            dangerouslySetInnerHTML={{ __html: html }}
-          />
+          <div className="w2p-capture" aria-hidden="true">
+            <div ref={viewportRef} className="w2p-viewport">
+              <div
+                ref={docRef}
+                className="w2p-content"
+                dangerouslySetInnerHTML={{ __html: html }}
+              />
+            </div>
+          </div>
         </>
       )}
 
