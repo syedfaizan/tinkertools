@@ -54,9 +54,17 @@ export function Footer() {
 
         <nav aria-label="Legal" className="text-sm">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
-            Legal
+            Site
           </h2>
           <ul className="mt-3 space-y-2">
+            <li>
+              <Link
+                href="/about"
+                className="text-zinc-600 transition-colors hover:text-indigo-600 dark:text-zinc-300 dark:hover:text-indigo-400"
+              >
+                About
+              </Link>
+            </li>
             <li>
               <Link
                 href="/privacy"
